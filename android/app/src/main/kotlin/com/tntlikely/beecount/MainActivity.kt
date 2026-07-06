@@ -19,11 +19,20 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterFragmentActivity() {
-    private val CHANNEL = "notification_channel"
-    private val INSTALL_CHANNEL = "com.tntlikely.beecount/install"
-    private val SCREENSHOT_CHANNEL = "com.tntlikely.beecount/screenshot"
-    private val LOGGER_CHANNEL = "com.beecount.logger"
-    private val SHARE_CHANNEL = "com.tntlikely.beecount/share"
+    companion object {
+        const val CHANNEL_NOTIFICATION = "notification_channel"
+        const val CHANNEL_INSTALL = "com.tntlikely.beecount/install"
+        const val CHANNEL_SCREENSHOT = "com.tntlikely.beecount/screenshot"
+        const val CHANNEL_LOGGER = "com.beecount.logger"
+        const val CHANNEL_SHARE = "com.tntlikely.beecount/share"
+        const val NOTIFICATION_CHANNEL_ID = "accounting_reminder"
+    }
+
+    private val CHANNEL = CHANNEL_NOTIFICATION
+    private val INSTALL_CHANNEL = CHANNEL_INSTALL
+    private val SCREENSHOT_CHANNEL = CHANNEL_SCREENSHOT
+    private val LOGGER_CHANNEL = CHANNEL_LOGGER
+    private val SHARE_CHANNEL = CHANNEL_SHARE
 
     private var screenshotObserver: ScreenshotObserver? = null
 
@@ -383,7 +392,7 @@ class MainActivity: FlutterFragmentActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
                     putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-                    putExtra(Settings.EXTRA_CHANNEL_ID, "accounting_reminder")
+                    putExtra(Settings.EXTRA_CHANNEL_ID, NOTIFICATION_CHANNEL_ID)
                 }
                 startActivity(intent)
                 android.util.Log.d("MainActivity", "打开通知渠道设置页面")
@@ -402,7 +411,7 @@ class MainActivity: FlutterFragmentActivity() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                val channel = notificationManager.getNotificationChannel("accounting_reminder")
+                val channel = notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID)
 
                 if (channel != null) {
                     val importanceLevel = when (channel.importance) {
@@ -426,7 +435,7 @@ class MainActivity: FlutterFragmentActivity() {
                         "lockscreenVisibility" to channel.lockscreenVisibility
                     )
                 } else {
-                    android.util.Log.w("MainActivity", "通知渠道 'accounting_reminder' 不存在")
+                    android.util.Log.w("MainActivity", "通知渠道 '${NOTIFICATION_CHANNEL_ID}' 不存在")
                     return mapOf(
                         "isEnabled" to false,
                         "importance" to "none",

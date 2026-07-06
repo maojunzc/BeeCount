@@ -56,12 +56,38 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<!-- Allow arbitrary network loads for Supabase -->
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
+		<!-- Allow specific domains for Supabase and AI providers -->
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<false/>
+			<key>NSExceptionDomains</key>
+			<dict>
+				<key>supabase.co</key>
+				<dict>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<false/>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+					<key>NSTemporaryExceptionMinimumTLSVersion</key>
+					<string>TLSv1.2</string>
+				</dict>
+				<key>openai.azure.com</key>
+				<dict>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<false/>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+				</dict>
+				<key>openai.com</key>
+				<dict>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<false/>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+				</dict>
+			</dict>
+		</dict>
 	<!-- Query URL Schemes - Required for opening other apps -->
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
