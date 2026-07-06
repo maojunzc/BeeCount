@@ -1097,9 +1097,13 @@ class _AIChatPageState extends ConsumerState<AIChatPage>
   // bills.length == txIds.length;undoneIds 是 txIds 的子集。
   // ============================================================
 
-  ({List<BillInfo> bills, List<int> txIds, Set<int> undoneIds})
+	({List<BillInfo> bills, List<int> txIds, Set<int> undoneIds})
       _parseBillMetadata(Message m) {
-    final raw = jsonDecode(m.metadata!) as Map<String, dynamic>;
+    final metadata = m.metadata;
+    if (metadata == null || metadata.trim().isEmpty) {
+      return (bills: [], txIds: [], undoneIds: {});
+    }
+    final raw = jsonDecode(metadata) as Map<String, dynamic>;
 
     // 新格式
     if (raw['bills'] is List) {

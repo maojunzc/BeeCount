@@ -301,7 +301,13 @@ Future<String> exportTransactionsJson(BeeDatabase db, int ledgerId) async {
 
 /// 将 JSON 数据转换为统一的 ImportData 格式
 ImportData parseJsonToImportData(String jsonStr) {
-  final data = jsonDecode(jsonStr) as Map<String, dynamic>;
+  final dynamic decoded;
+  try {
+    decoded = jsonDecode(jsonStr);
+  } catch (e) {
+    throw FormatException('JSON 格式错误，无法解析导入数据: $e');
+  }
+  final data = decoded as Map<String, dynamic>;
 
   // 解析账户
   final accounts = <ImportAccount>[];

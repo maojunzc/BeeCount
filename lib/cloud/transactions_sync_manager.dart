@@ -989,14 +989,22 @@ class _TransactionSerializer implements fcs.DataSerializer<int> {
 
   @override
   Future<int> deserialize(String data) async {
-    final json = jsonDecode(data) as Map<String, dynamic>;
-    return json['ledgerId'] as int;
+    try {
+      final json = jsonDecode(data) as Map<String, dynamic>;
+      return json['ledgerId'] as int;
+    } catch (e) {
+      throw Exception('反序列化交易数据失败: $e');
+    }
   }
 
   @override
   String fingerprint(String data) {
-    final json = jsonDecode(data) as Map<String, dynamic>;
-    return _contentFingerprintFromMap(json);
+    try {
+      final json = jsonDecode(data) as Map<String, dynamic>;
+      return _contentFingerprintFromMap(json);
+    } catch (e) {
+      return '';
+    }
   }
 
   /// 从 payload 计算内容指纹（Serializer 版本）

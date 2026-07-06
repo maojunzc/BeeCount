@@ -8,6 +8,7 @@ import io.flutter.plugin.common.MethodChannel
  */
 object LoggerPlugin {
     private const val TAG = "LoggerPlugin"
+    @Volatile
     private var channel: MethodChannel? = null
 
     // 日志队列，用于在 Flutter 端未就绪时缓存日志

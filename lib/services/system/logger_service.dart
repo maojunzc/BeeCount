@@ -212,33 +212,32 @@ class LoggerService {
   }
 
   /// 加载持久化的日志
-  void _loadLogs() {
+  Future<void> _loadLogs() async {
     if (_isLoaded) return;
 
     try {
-      SharedPreferences.getInstance().then((prefs) {
-        final jsonStr = prefs.getString(_storageKey);
-        if (jsonStr != null && jsonStr.isNotEmpty) {
-          final List<dynamic> jsonList = jsonDecode(jsonStr);
-          final now = DateTime.now();
+      final prefs = await SharedPreferences.getInstance();
+      final jsonStr = prefs.getString(_storageKey);
+      if (jsonStr != null && jsonStr.isNotEmpty) {
+        final List<dynamic> jsonList = jsonDecode(jsonStr);
+        final now = DateTime.now();
 
-          // 过滤掉超过48小时的日志
-          for (final json in jsonList) {
-            try {
-              final entry = LogEntry.fromJson(json as Map<String, dynamic>);
-              final age = now.difference(entry.timestamp);
+        // 过滤掉超过48小时的日志
+        for (final json in jsonList) {
+          try {
+            final entry = LogEntry.fromJson(json as Map<String, dynamic>);
+            final age = now.difference(entry.timestamp);
 
-              if (age.inHours < _maxStorageHours) {
-                _logs.add(entry);
-              }
-            } catch (e) {
-              debugPrint('加载日志条目失败: $e');
+            if (age.inHours < _maxStorageHours) {
+              _logs.add(entry);
             }
+          } catch (e) {
+            debugPrint('加载日志条目失败: $e');
           }
-
-          debugPrint('从持久化存储加载了 ${_logs.length} 条日志');
         }
-      });
+
+        debugPrint('从持久化存储加载了 ${_logs.length} 条日志');
+      }
     } catch (e) {
       debugPrint('加载日志失败: $e');
     } finally {
