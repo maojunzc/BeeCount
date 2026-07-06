@@ -436,16 +436,9 @@ Future<_AppInfo> _getAppInfo() async {
 /// 尝试使用多种方式打开URL，提供更好的兼容性
 Future<bool> _tryOpenUrl(Uri url) async {
   try {
+    // canLaunchUrl 不区分 LaunchMode，只需要调用一次
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
-      return true;
-    }
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
-      return true;
-    }
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.platformDefault);
       return true;
     }
     logger.error('AboutPage', '无法打开URL: $url');
