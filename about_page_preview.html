@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜜蜂记账 - 关于页面预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .preview-container {
+            max-width: 430px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        .phone-header {
+            background: linear-gradient(135deg, #FFB800 0%, #FF8C00 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .phone-header .back-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .phone-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFB800 0%, #FF8C00 100%);
+            border-radius: 18px;
+            margin: 30px auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .app-icon svg {
+            width: 50px;
+            height: 50px;
+            fill: white;
+        }
+        .app-name {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .app-version {
+            text-align: center;
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .section {
+            margin: 20px 16px;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .section-item {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .section-item:last-child {
+            border-bottom: none;
+        }
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            background: #FFF3E0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FF8C00;
+        }
+        .section-content {
+            flex: 1;
+        }
+        .section-title {
+            font-size: 15px;
+            color: #333;
+        }
+        .section-subtitle {
+            font-size: 13px;
+            color: #999;
+            margin-top: 2px;
+        }
+        .snackbar-demo {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .removed-badge {
+            background: #FFEBEE;
+            color: #F44336;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        .title-text {
+            display: flex;
+            align-items: center;
+        }
+        .info-box {
+            background: #E8F5E9;
+            border: 1px solid #A5D6A7;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 16px;
+        }
+        .info-box h3 {
+            color: #2E7D32;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .info-box ul {
+            color: #555;
+            font-size: 13px;
+            padding-left: 20px;
+        }
+        .info-box li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="phone-header">
+            <div class="back-btn">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
+                    <path d="M8 1L3 6L8 11" stroke="white" stroke-width="2" fill="none"/>
+                </svg>
+            </div>
+            <h1>关于</h1>
+        </div>
+        
+        <div style="padding: 0 16px;">
+            <div class="app-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+            </div>
+            <div class="app-name">蜜蜂记账</div>
+            <div class="app-version">dev-1.0.0</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-item">
+                <div class="section-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                </div>
+                <div class="section-content">
+                    <div class="section-title">官方网站</div>
+                </div>
+            </div>
+            <div class="section-item">
+                <div class="section-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0.3c-6.6 0-12 5.3-12 12 0 5.3 4.4 9.8 10 11.4 0.6 0.1 0.8-0.3 0.8-0.6v-2.2c-3.3 0.7-4-1.6-4-1.6 -0.6-1.5-1.4-1.9-1.4-1.9 -1.2-0.8 0.1-0.8 0.1-0.8 1.3 0.1 2 1.3 2 1.3 1.1 1.9 2.9 1.3 3.6 1 0.1-0.8 0.4-1.3 0.8-1.6 -2.7-0.3-5.5-1.3-5.5-5.9 0-1.3 0.5-2.4 1.2-3.2 -0.1-0.3-0.5-1.5 0.1-3.2 0 0 1-0.3 3.3 1.2 1-0.3 2-0.4 3-0.4 1 0 2 0.1 3 0.4 2.3-1.6 3.3-1.2 3.3-1.2 0.6 1.7 0.2 2.9 0.1 3.2 0.7 0.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9 0.4 0.4 0.8 1.1 0.8 2.2v3.3c0 0.3 0.2 0.7 0.8 0.6 5.7-1.6 10-6.1 10-11.4 0-6.6-5.4-12-12-12z"/>
+                    </svg>
+                </div>
+                <div class="section-content">
+                    <div class="section-title">GitHub 仓库</div>
+                    <div class="section-subtitle">github.com/maojunzc/BeeCount</div>
+                </div>
+            </div>
+            <div class="section-item">
+                <div class="section-icon" style="background: #E3F2FD;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#1976D2">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                    </svg>
+                </div>
+                <div class="section-content">
+                    <div class="section-title">微信公众号</div>
+                    <div class="section-subtitle">maojunzc</div>
+                </div>
+            </div>
+            <div class="section-item">
+                <div class="section-icon" style="background: #FFF3E0;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9800">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                    </svg>
+                </div>
+                <div class="section-content">
+                    <div class="section-title">QQ</div>
+                    <div class="section-subtitle">2316562571</div>
+                </div>
+            </div>
+            <div class="section-item" style="background: #FFF8E1;">
+                <div style="flex: 1; text-align: center; padding: 10px 0;">
+                    <span style="color: #F57C00; font-size: 13px;">✓ 已删除：小红书、抖音、ICP备案号</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>📋 修改摘要</h3>
+            <ul>
+                <li><strong>删除：</strong>小红书入口（278979339）</li>
+                <li><strong>删除：</strong>抖音入口（75639334477）</li>
+                <li><strong>删除：</strong>ICP备案号（浙ICP备2025214907号-2A）</li>
+                <li><strong>删除：</strong>iOS自动记账页的小红书教程链接</li>
+                <li><strong>新增：</strong>微信公众号入口（maojunzc）</li>
+                <li><strong>新增：</strong>QQ入口（2316562571）</li>
+            </ul>
+        </div>
+        
+        <div style="height: 30px;"></div>
+    </div>
+    
+    <div class="snackbar-demo" id="snackbar">
+        微信公众号：maojunzc
+    </div>
+    
+    <script>
+        // 模拟点击显示SnackBar
+        document.querySelectorAll('.section-item').forEach(item => {
+            if (item.querySelector('.section-subtitle')) {
+                item.addEventListener('click', function() {
+                    const title = this.querySelector('.section-title').textContent;
+                    const subtitle = this.querySelector('.section-subtitle')?.textContent || '';
+                    const snackbar = document.getElementById('snackbar');
+                    snackbar.textContent = title + '：' + subtitle;
+                    snackbar.style.display = 'block';
+                    setTimeout(() => {
+                        snackbar.style.display = 'none';
+                    }, 2000);
+                });
+            }
+        });
+        
+        setTimeout(() => {
+            document.getElementById('snackbar').style.display = 'none';
+        }, 3000);
+    </script>
+</body>
+</html>

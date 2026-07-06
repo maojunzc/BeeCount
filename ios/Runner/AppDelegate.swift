@@ -12,10 +12,10 @@ import UserNotifications
 
     // 注册AppIntents桥接插件
     if #available(iOS 13.0, *) {
-      let controller = window?.rootViewController as! FlutterViewController
-      let registrar = self.registrar(forPlugin: "AppIntentsBridge")
-      if let registrar = registrar {
-        AppIntentsBridge.register(with: registrar)
+      if let controller = window?.rootViewController as? FlutterViewController {
+        if let registrar = self.registrar(forPlugin: "AppIntentsBridge") {
+          AppIntentsBridge.register(with: registrar)
+        }
       }
     }
 
@@ -25,21 +25,22 @@ import UserNotifications
     }
 
     // 设置日志插件
-    let controller = window?.rootViewController as! FlutterViewController
-    let loggerChannel = FlutterMethodChannel(
-      name: "com.beecount.logger",
-      binaryMessenger: controller.binaryMessenger
-    )
-    LoggerPlugin.setup(channel: loggerChannel)
+    if let controller = window?.rootViewController as? FlutterViewController {
+      let loggerChannel = FlutterMethodChannel(
+        name: "com.beecount.logger",
+        binaryMessenger: controller.binaryMessenger
+      )
+      LoggerPlugin.setup(channel: loggerChannel)
 
-    // 监听 iCloud 日志（从插件模块发送）
-    NotificationCenter.default.addObserver(
-      forName: NSNotification.Name("ICloudLog"),
-      object: nil,
-      queue: .main
-    ) { notification in
-      if let message = notification.userInfo?["message"] as? String {
-        LoggerPlugin.info(tag: "iCloud", message: message)
+      // 监听 iCloud 日志（从插件模块发送）
+      NotificationCenter.default.addObserver(
+        forName: NSNotification.Name("ICloudLog"),
+        object: nil,
+        queue: .main
+      ) { notification in
+        if let message = notification.userInfo?["message"] as? String {
+          LoggerPlugin.info(tag: "iCloud", message: message)
+        }
       }
     }
 

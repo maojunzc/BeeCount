@@ -45,7 +45,12 @@ class MainActivity: FlutterFragmentActivity() {
             android.util.Log.d("MainActivity", "✅ 收到图片分享")
             LoggerPlugin.info("MainActivity", "收到图片分享")
 
-            val imageUri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+            val imageUri: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+            }
             if (imageUri != null) {
                 android.util.Log.d("MainActivity", "图片URI: $imageUri")
                 LoggerPlugin.info("MainActivity", "分享图片URI: $imageUri")
@@ -285,10 +290,9 @@ class MainActivity: FlutterFragmentActivity() {
             android.util.Log.d("MainActivity", "时间差: ${timeDiff / 1000}秒")
 
             if (timeDiff <= 0) {
-                android.util.Log.w("MainActivity", "⚠️ 调度时间已过期，立即发送通知")
-                // 如果时间已过，立即发送通知
-                val receiver = NotificationReceiver()
-                receiver.onReceive(this, intent)
+                android.util.Log.w("MainActivity", "⚠️ 调度时间已过期，立即发送广播通知")
+                // 改用 sendBroadcast 发送标准广播，让 BroadcastReceiver 在系统生命周期中处理
+                sendBroadcast(intent)
                 return
             }
 
@@ -467,17 +471,16 @@ class MainActivity: FlutterFragmentActivity() {
         android.util.Log.d("MainActivity", "ID: $notificationId")
 
         try {
-            val receiver = NotificationReceiver()
-            val intent = Intent().apply {
+            val intent = Intent(this, NotificationReceiver::class.java).apply {
                 putExtra("title", title)
                 putExtra("body", body)
                 putExtra("notificationId", notificationId)
+                action = "${packageName}.NOTIFICATION_ALARM"
             }
-
-            receiver.onReceive(this, intent)
-            android.util.Log.d("MainActivity", "✅ NotificationReceiver调用完成")
+            sendBroadcast(intent)
+            android.util.Log.d("MainActivity", "✅ sendBroadcast 调用完成")
         } catch (e: Exception) {
-            android.util.Log.e("MainActivity", "❌ 直接测试NotificationReceiver失败: $e")
+            android.util.Log.e("MainActivity", "❌ 发送广播失败: $e")
         }
     }
 
@@ -589,6 +592,7 @@ class MainActivity: FlutterFragmentActivity() {
 
                 intent.setDataAndType(uri, "application/vnd.android.package-archive")
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 android.util.Log.d("MainActivity", "UPDATE_CRASH: URI权限已设置")
 
             } catch (e: IllegalArgumentException) {
@@ -598,8 +602,6 @@ class MainActivity: FlutterFragmentActivity() {
                 android.util.Log.e("MainActivity", "UPDATE_CRASH: ❌ FileProvider创建URI失败", e)
                 return false
             }
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             android.util.Log.d("MainActivity", "UPDATE_CRASH: 启动APK安装Intent")
 

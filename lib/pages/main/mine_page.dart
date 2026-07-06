@@ -18,7 +18,6 @@ import '../cloud/cloud_service_page.dart';
 import '../../services/system/logger_service.dart';
 import '../../services/ui/avatar_service.dart';
 import '../../providers/avatar_providers.dart';
-import '../settings/help_center_page.dart';
 import '../../providers/sync_providers.dart' as sp;
 import '../../services/export/share_poster_service.dart';
 import '../../l10n/app_localizations.dart';
@@ -32,8 +31,6 @@ import '../automation/auto_billing_settings_page.dart';
 import '../ai/ai_settings_page.dart';
 import '../cloud/cloud_sync_page.dart';
 import '../cloud/beecount_cloud_sync_page.dart';
-import '../../utils/website_urls.dart';
-import '../../providers/github_star_provider.dart';
 import '../settings/data_management_page.dart';
 import '../settings/appearance_settings_page.dart';
 import '../settings/smart_billing_page.dart';
@@ -388,21 +385,14 @@ class MinePage extends ConsumerWidget {
                         },
                       ),
                       BeeTokens.cardDivider(context),
-                      // 使用帮助:默认 App 内嵌 WebView(embed 模式)。
-                      // 审核兜底:kHelpCenterInApp 改 false 重新打包即回退外部浏览器
+                      // 使用帮助
                       AppListTile(
                         leading: Icons.help_outline,
                         title: AppLocalizations.of(context).mineHelp,
                         subtitle: AppLocalizations.of(context).mineHelpSubtitle,
                         onTap: () async {
-                          if (kHelpCenterInApp) {
-                            await Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => const HelpCenterPage()));
-                          } else {
-                            final locale = Localizations.localeOf(context);
-                            await _tryOpenUrl(
-                                Uri.parse(WebsiteUrls.docs(locale)));
-                          }
+                          final url = Uri.parse('https://github.com/maojunzc/BeeCount');
+                          await _tryOpenUrl(url);
                         },
                       ),
                     ],
@@ -453,20 +443,13 @@ class MinePage extends ConsumerWidget {
                         BeeTokens.cardDivider(context),
                       ],
                       // GitHub Star
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final starCountAsync =
-                              ref.watch(githubStarCountProvider);
-                          final starCount = starCountAsync.valueOrNull ?? 999;
-                          return AppListTile(
-                            leading: Icons.star_outline,
-                            title:
-                                AppLocalizations.of(context).mineSupportAuthor,
-                            subtitle: AppLocalizations.of(context)
-                                .mineSupportAuthorSubtitle(
-                                    starCount.toString()),
-                            onTap: () => _showGitHubStarGuide(context),
-                          );
+                      AppListTile(
+                        leading: Icons.star_outline,
+                        title: AppLocalizations.of(context).mineSupportAuthor,
+                        subtitle: AppLocalizations.of(context).mineHelpSubtitle,
+                        onTap: () async {
+                          final url = Uri.parse('https://github.com/maojunzc/BeeCount');
+                          await _tryOpenUrl(url);
                         },
                       ),
                       BeeTokens.cardDivider(context),
@@ -692,7 +675,7 @@ void _showGitHubStarGuide(BuildContext context) {
         FilledButton(
           onPressed: () {
             Navigator.pop(context);
-            _tryOpenUrl(Uri.parse('https://github.com/TNT-Likely/BeeCount'));
+            _tryOpenUrl(Uri.parse('https://github.com/maojunzc/BeeCount'));
           },
           child: Text(l10n.githubStarGuideButton),
         ),

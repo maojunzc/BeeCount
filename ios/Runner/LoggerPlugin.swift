@@ -16,6 +16,11 @@ public class LoggerPlugin {
         // 同时打印到控制台
         print("[\(tag)] \(message)")
 
+        guard let channel = channel else {
+            // Flutter 引擎尚未就绪时直接返回，避免崩溃
+            return
+        }
+
         let args: [String: Any] = [
             "platform": "ios",
             "level": level,
@@ -25,7 +30,7 @@ public class LoggerPlugin {
         ]
 
         DispatchQueue.main.async {
-            channel?.invokeMethod("onNativeLog", arguments: args)
+            channel.invokeMethod("onNativeLog", arguments: args)
         }
     }
 

@@ -205,7 +205,7 @@ class MonthSummaryPoster extends StatelessWidget {
               ],
             ),
             child: QrImageView(
-              data: 'https://github.com/TNT-Likely/BeeCount',
+              data: 'https://github.com/maojunzc/BeeCount',
               version: QrVersions.auto,
               size: 84,
               backgroundColor: Colors.white,

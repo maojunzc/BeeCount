@@ -166,9 +166,9 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                       AppListTile(
                         leading: Icons.code_outlined,
                         title: AppLocalizations.of(context).aboutGitHubRepo,
-                        subtitle: 'github.com/TNT-Likely/BeeCount',
+                        subtitle: 'github.com/maojunzc/BeeCount',
                         onTap: () async {
-                          final url = Uri.parse('https://github.com/TNT-Likely/BeeCount');
+                          final url = Uri.parse('https://github.com/maojunzc/BeeCount');
                           await _tryOpenUrl(url);
                         },
                       ),
@@ -192,6 +192,38 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                           onTap: () async {
                             final url = Uri.parse('https://v.douyin.com/YG7tUweYYyQ/');
                             await _tryOpenUrl(url);
+                          },
+                        ),
+                        const Divider(height: 1, thickness: 0.5),
+                        AppListTile(
+                          leading: Icons.chat_outlined,
+                          title: AppLocalizations.of(context).aboutWechat,
+                          subtitle: 'maojunzc',
+                          onTap: () async {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('微信公众号：maojunzc'),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        const Divider(height: 1, thickness: 0.5),
+                        AppListTile(
+                          leading: Icons.alternate_email_outlined,
+                          title: AppLocalizations.of(context).aboutQQ,
+                          subtitle: '2316562571',
+                          onTap: () async {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('QQ号：2316562571'),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
                           },
                         ),
                       ],
@@ -278,8 +310,8 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                         onTap: () async {
                           final locale = Localizations.localeOf(context).languageCode;
                           final docUrl = locale == 'zh'
-                            ? 'https://github.com/TNT-Likely/BeeCount/blob/main/docs/donate/README_ZH.md'
-                            : 'https://github.com/TNT-Likely/BeeCount/blob/main/docs/donate/README_EN.md';
+                            ? 'https://github.com/maojunzc/BeeCount/blob/main/docs/donate/README_ZH.md'
+                            : 'https://github.com/maojunzc/BeeCount/blob/main/docs/donate/README_EN.md';
                           final url = Uri.parse(docUrl);
                           await _tryOpenUrl(url);
                         },
@@ -291,7 +323,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                         subtitle: AppLocalizations.of(context).mineFeedbackSubtitle,
                         onTap: () async {
                           final url = Uri.parse(
-                              'https://github.com/TNT-Likely/BeeCount/issues');
+                              'https://github.com/maojunzc/BeeCount/issues');
                           await _tryOpenUrl(url);
                         },
                       ),

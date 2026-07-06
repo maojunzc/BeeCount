@@ -2361,7 +2361,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareGuidanceCopyText.
   ///
   /// In en, this message translates to:
-  /// **'Track my expenses with BeeCount - open source, free & ad-free! 🐝 Download: https://github.com/TNT-Likely/BeeCount'**
+  /// **'Track my expenses with BeeCount - open source, free & ad-free! 🐝 Download: https://github.com/maojunzc/BeeCount'**
   String get shareGuidanceCopyText;
 
   /// No description provided for @shareGuidanceCopied.
@@ -5415,7 +5415,7 @@ abstract class AppLocalizations {
   /// No description provided for @updateManualVisit.
   ///
   /// In en, this message translates to:
-  /// **'Please manually visit in browser:\\nhttps://github.com/TNT-Likely/BeeCount/releases'**
+  /// **'Please manually visit in browser:\\nhttps://github.com/maojunzc/BeeCount/releases'**
   String get updateManualVisit;
 
   /// No description provided for @updateNoLocalApkTitle.

@@ -37,7 +37,7 @@ class _IOSAutoBillingPageState extends ConsumerState<IOSAutoBillingPage> {
               padding: const EdgeInsets.all(16),
               children: [
                 // 视频教程（置顶）
-                _buildTutorialCard(context, primaryColor, l10n),
+                const SizedBox.shrink(),
 
                 const SizedBox(height: 16),
 

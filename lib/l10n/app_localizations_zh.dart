@@ -1234,7 +1234,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sharePosterSaveSuccess => '已保存到相册';
 
   @override
-  String get shareGuidanceCopyText => '用蜜蜂记账记录生活，开源免费无广告！🐝 下载地址：https://github.com/TNT-Likely/BeeCount';
+  String get shareGuidanceCopyText => '用蜜蜂记账记录生活，开源免费无广告！🐝 下载地址：https://github.com/maojunzc/BeeCount';
 
   @override
   String get shareGuidanceCopied => '文案已复制';
@@ -2849,7 +2849,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get updateCannotOpenLink => '无法打开链接';
 
   @override
-  String get updateManualVisit => '请手动在浏览器中访问：\\nhttps://github.com/TNT-Likely/BeeCount/releases';
+  String get updateManualVisit => '请手动在浏览器中访问：\\nhttps://github.com/maojunzc/BeeCount/releases';
 
   @override
   String get updateNoLocalApkTitle => '未找到更新包';
@@ -8124,7 +8124,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get sharePosterSaveSuccess => '已儲存到相簿';
 
   @override
-  String get shareGuidanceCopyText => '用蜜蜂記帳記錄生活，開源免費無廣告！🐝 下載地址：https://github.com/TNT-Likely/BeeCount';
+  String get shareGuidanceCopyText => '用蜜蜂記帳記錄生活，開源免費無廣告！🐝 下載地址：https://github.com/maojunzc/BeeCount';
 
   @override
   String get shareGuidanceCopied => '文案已複製';
@@ -9739,7 +9739,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get updateCannotOpenLink => '無法開啟連結';
 
   @override
-  String get updateManualVisit => '請手動在瀏覽器中存取：\\nhttps://github.com/TNT-Likely/BeeCount/releases';
+  String get updateManualVisit => '請手動在瀏覽器中存取：\\nhttps://github.com/maojunzc/BeeCount/releases';
 
   @override
   String get updateNoLocalApkTitle => '未找到更新包';

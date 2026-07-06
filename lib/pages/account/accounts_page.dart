@@ -7,11 +7,9 @@ import 'package:collection/collection.dart';
 import '../../providers.dart';
 import '../../services/billing/post_processor.dart';
 import '../../services/currency/rate_math.dart';
-import '../../services/marketing/product_promos.dart';
 import '../../widgets/ui/ui.dart';
 import '../../widgets/biz/amount_text.dart';
 import '../../widgets/biz/section_card.dart';
-import '../../widgets/biz/product_promo_card.dart';
 import '../../data/db.dart' as db;
 import '../../l10n/app_localizations.dart';
 import '../../styles/tokens.dart';
@@ -121,9 +119,7 @@ class _AccountsPageState extends ConsumerState<AccountsPage> {
                 icon: const Icon(Icons.add),
                 tooltip: l10n.accountAddTooltip,
               ),
-              // 蜜蜂家当 BeeAssets 入口 — 行为走 ProductPromoLauncher
               // (iOS 跳商店 / Android 弹窗)。
-              _BeeAssetsHeaderEntry(),
               IconButton(
                 onPressed: () => _showSettingsSheet(context, ref, accountFeatureAsync, accountsAsync),
                 icon: const Icon(Icons.settings_outlined),
@@ -2263,20 +2259,4 @@ class _CompactDefaultAccount extends ConsumerWidget {
 /// 用 Material 标准的 Premium / 进阶版图标(`workspace_premium_outlined`),
 /// 跟 setting / add 等 outlined 图标视觉重量完全一致;语义上暗示「升级 /
 /// 进阶版本」,鼓励点击。颜色自适应 header 背景。点击进入介绍弹窗。
-class _BeeAssetsHeaderEntry extends StatelessWidget {
-  const _BeeAssetsHeaderEntry();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final info = beeAssetsPromo(context);
-    final texts = buildPromoTexts(context, l10n.aboutBeeAssets);
-
-    return IconButton(
-      onPressed: () => ProductPromoLauncher.open(context, info, texts),
-      tooltip: info.title,
-      icon: const Icon(Icons.auto_awesome_outlined),
-    );
-  }
-}
 

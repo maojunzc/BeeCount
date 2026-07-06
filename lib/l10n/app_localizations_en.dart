@@ -1234,7 +1234,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sharePosterSaveSuccess => 'Saved to gallery';
 
   @override
-  String get shareGuidanceCopyText => 'Track my expenses with BeeCount - open source, free & ad-free! 🐝 Download: https://github.com/TNT-Likely/BeeCount';
+  String get shareGuidanceCopyText => 'Track my expenses with BeeCount - open source, free & ad-free! 🐝 Download: https://github.com/maojunzc/BeeCount';
 
   @override
   String get shareGuidanceCopied => 'Text copied';
@@ -2849,7 +2849,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateCannotOpenLink => 'Cannot open link';
 
   @override
-  String get updateManualVisit => 'Please manually visit in browser:\\nhttps://github.com/TNT-Likely/BeeCount/releases';
+  String get updateManualVisit => 'Please manually visit in browser:\\nhttps://github.com/maojunzc/BeeCount/releases';
 
   @override
   String get updateNoLocalApkTitle => 'No Update Package Found';
