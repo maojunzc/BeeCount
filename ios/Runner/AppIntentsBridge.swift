@@ -19,8 +19,11 @@ class AppIntentsBridge: NSObject, FlutterPlugin {
     //
     // Flutter 处理完 processScreenshot 后通过 MethodChannel 调
     // `notifyBillingComplete`,触发这里的 continuation 让 perform() 返回。
-    private static var billingCompletionContinuations: [CheckedContinuation<Void, Never>] = []
+    // 使用请求级 requestId 避免并发 Shortcut 误唤醒。
+    private static var pendingRequestIds: [String] = []
+    private static var billingCompletionContinuations: [String: CheckedContinuation<Void, Never>] = [:]
     private static let continuationLock = NSLock()
+    private static var requestCounter: UInt64 = 0
 
     static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
@@ -50,8 +53,8 @@ class AppIntentsBridge: NSObject, FlutterPlugin {
             }
         case "notifyBillingComplete":
             // Flutter 端 processScreenshot 处理完(成功/失败/超时都算)后回调
-            // 唤醒所有等待的 perform() continuations
-            AppIntentsBridge.resumeAllContinuations()
+            // 只唤醒最早等待的那个 continuation，避免并发 Shortcut 误唤醒
+            AppIntentsBridge.resumeNextContinuation()
             print("[AppIntentsBridge] ✅ 收到 Flutter 处理完成信号")
             result(nil)
         default:
@@ -80,30 +83,58 @@ class AppIntentsBridge: NSObject, FlutterPlugin {
 
     /// AppIntent perform() 用这个方法等 Flutter 完成处理。
     /// 默认 25 秒超时(留 5s buffer 给 iOS 的 30s 后台窗口)。
+    /// 返回 requestId 供调用方在异常路径下手动取消，避免 continuation 泄漏。
     static func waitForBillingComplete(timeout: TimeInterval = 25.0) async {
+        let requestId = nextRequestId()
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             continuationLock.lock()
-            billingCompletionContinuations.append(continuation)
+            pendingRequestIds.append(requestId)
+            billingCompletionContinuations[requestId] = continuation
             continuationLock.unlock()
-            print("[AppIntentsBridge] ⏳ perform() 等待 Flutter 处理完成(超时 \(timeout)s)")
+            print("[AppIntentsBridge] ⏳ perform() 等待 Flutter 处理完成(requestId=\(requestId), 超时 \(timeout)s)")
 
-            // 兜底超时:如果 Flutter 卡了/挂了,iOS 30s 窗口快到时强制返回
+            // 兜底超时:如果 Flutter 卡了/挂了,iOS 30s 窗口快到时强制唤醒自己
             DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
-                AppIntentsBridge.resumeAllContinuations()
+                AppIntentsBridge.resumeContinuation(requestId: requestId)
             }
         }
     }
 
-    /// 唤醒所有等待中的 continuations。重复调用安全(已 resume 的会被跳过)。
-    private static func resumeAllContinuations() {
+    /// 单调递增的请求 ID（线程安全）
+    private static func nextRequestId() -> String {
         continuationLock.lock()
-        let conts = billingCompletionContinuations
-        billingCompletionContinuations.removeAll()
+        defer { continuationLock.unlock() }
+        requestCounter &+= 1
+        return "req-\(requestCounter)"
+    }
+
+    /// 唤醒最早等待的 continuation（FIFO）。
+    /// `notifyBillingComplete` 调用此方法：每次只唤醒一个，按入队顺序出队，
+    /// 避免并发 Shortcut 互相误唤醒。
+    private static func resumeNextContinuation() {
+        continuationLock.lock()
+        guard !pendingRequestIds.isEmpty else {
+            continuationLock.unlock()
+            return
+        }
+        let requestId = pendingRequestIds.removeFirst()
+        let cont = billingCompletionContinuations.removeValue(forKey: requestId)
         continuationLock.unlock()
 
-        for cont in conts {
-            cont.resume()
+        cont?.resume()
+    }
+
+    /// 按 requestId 精确唤醒（超时兜底用）。重复调用安全(已 resume 的会被跳过)。
+    private static func resumeContinuation(requestId: String) {
+        continuationLock.lock()
+        // 从等待队列中移除（若已出队则 removeValue 返回 nil，无副作用）
+        if let idx = pendingRequestIds.firstIndex(of: requestId) {
+            pendingRequestIds.remove(at: idx)
         }
+        let cont = billingCompletionContinuations.removeValue(forKey: requestId)
+        continuationLock.unlock()
+
+        cont?.resume()
     }
 }
 
