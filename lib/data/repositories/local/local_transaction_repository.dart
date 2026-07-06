@@ -426,7 +426,7 @@ class LocalTransactionRepository implements TransactionRepository {
       await db.batch((b) => b.insertAll(db.transactions, effective));
 
       // 2. SELECT 回拿 (id, syncId) 映射,按 effective 顺序对齐
-      final syncIds = effective.map((c) => c.syncId.value!).toList();
+      final syncIds = effective.map((c) => c.syncId.value ?? '').toList();
       final inserted = await (db.select(db.transactions)
             ..where((t) => t.syncId.isIn(syncIds)))
           .get();

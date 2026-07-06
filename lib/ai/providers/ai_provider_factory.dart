@@ -532,6 +532,10 @@ class AIProviderFactory {
       return message['content'] as String;
     } on DioException catch (e) {
       throw AIException(_extractDioError(e));
+    } on TypeError catch (e) {
+      throw AIException('AI 文本响应格式无效: $e');
+    } catch (e) {
+      throw AIException('AI 文本响应解析失败: $e');
     }
   }
 
@@ -575,6 +579,10 @@ class AIProviderFactory {
       return message['content'] as String;
     } on DioException catch (e) {
       throw AIException(_extractDioError(e));
+    } on TypeError catch (e) {
+      throw AIException('AI 图像响应格式无效: $e');
+    } catch (e) {
+      throw AIException('AI 图像响应解析失败: $e');
     }
   }
 

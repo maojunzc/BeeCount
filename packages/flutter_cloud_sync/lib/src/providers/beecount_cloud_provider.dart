@@ -1995,7 +1995,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
           'List failed: ${_extractErrorMessage(response)}');
     }
 
-    final data = jsonDecode(response.body);
+    dynamic data;
+    try {
+      data = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (data is! List) {
       return const [];
     }
@@ -2479,7 +2484,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'List devices failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     final out = <BeeCountCloudDevice>[];
     for (final row in decoded) {
@@ -2509,7 +2519,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'Read ledgers failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     final out = <BeeCountCloudReadLedger>[];
     for (final row in decoded) {
@@ -2593,7 +2608,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'List invites failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     return [
       for (final row in decoded)
@@ -2641,7 +2661,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'List members failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     return [
       for (final row in decoded)
@@ -2739,7 +2764,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'Read transactions failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     final out = <BeeCountCloudReadTransaction>[];
     for (final row in decoded) {
@@ -2764,7 +2794,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'Read accounts failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     final out = <BeeCountCloudReadAccount>[];
     for (final row in decoded) {
@@ -2785,7 +2820,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'Read categories failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     final out = <BeeCountCloudReadCategory>[];
     for (final row in decoded) {
@@ -2806,7 +2846,12 @@ class BeeCountCloudStorageService implements CloudStorageService {
       throw CloudStorageException(
           'Read tags failed: ${_extractErrorMessage(response)}');
     }
-    final decoded = jsonDecode(response.body);
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw CloudStorageException('解析响应失败: $e');
+    }
     if (decoded is! List) return const [];
     final out = <BeeCountCloudReadTag>[];
     for (final row in decoded) {

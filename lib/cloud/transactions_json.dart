@@ -315,7 +315,7 @@ ImportData parseJsonToImportData(String jsonStr) {
   if (jsonAccounts != null) {
     for (final acc in jsonAccounts.cast<Map<String, dynamic>>()) {
       accounts.add(ImportAccount(
-        name: acc['name'] as String,
+        name: (acc['name'] as String?) ?? '',
         type: acc['type'] as String?,
         currency: acc['currency'] as String?,
         initialBalance: (acc['initialBalance'] as num?)?.toDouble(),
@@ -329,8 +329,8 @@ ImportData parseJsonToImportData(String jsonStr) {
   if (jsonCategories != null) {
     for (final cat in jsonCategories.cast<Map<String, dynamic>>()) {
       categories.add(ImportCategory(
-        name: cat['name'] as String,
-        kind: cat['kind'] as String,
+        name: (cat['name'] as String?) ?? '',
+        kind: (cat['kind'] as String?) ?? '',
         level: cat['level'] as int? ?? 1,
         sortOrder: cat['sortOrder'] as int? ?? 0,
         icon: cat['icon'] as String?,
@@ -348,7 +348,7 @@ ImportData parseJsonToImportData(String jsonStr) {
   if (jsonTags != null) {
     for (final tag in jsonTags.cast<Map<String, dynamic>>()) {
       tags.add(ImportTag(
-        name: tag['name'] as String,
+        name: (tag['name'] as String?) ?? '',
         color: tag['color']?.toString(),
       ));
     }
@@ -372,7 +372,7 @@ ImportData parseJsonToImportData(String jsonStr) {
       if (jsonAttachments != null && jsonAttachments.isNotEmpty) {
         attachments = jsonAttachments.cast<Map<String, dynamic>>().map((a) {
           return ImportAttachment(
-            fileName: a['fileName'] as String,
+            fileName: (a['fileName'] as String?) ?? '',
             originalName: a['originalName'] as String?,
             fileSize: a['fileSize'] as int?,
             width: a['width'] as int?,
@@ -384,13 +384,13 @@ ImportData parseJsonToImportData(String jsonStr) {
         }).toList();
       }
 
-      final type = it['type'] as String;
+      final type = (it['type'] as String?) ?? '';
       transactions.add(ImportTransaction(
         type: type,
-        amount: (it['amount'] as num).toDouble(),
+        amount: (it['amount'] as num?)?.toDouble() ?? 0.0,
         categoryName: it['categoryName'] as String?,
         categoryKind: it['categoryKind'] as String?,
-        happenedAt: DateTime.parse(it['happenedAt'] as String).toLocal(),
+        happenedAt: DateTime.tryParse(it['happenedAt'] as String? ?? '')?.toLocal() ?? DateTime.now(),
         note: it['note'] as String?,
         // 账户信息：转账用 fromAccountName/toAccountName，其他用 accountName
         accountName: type != 'transfer' ? it['accountName'] as String? : null,

@@ -477,7 +477,7 @@ class TransactionsSyncManager implements SyncService {
 
   /// 从 JSON payload 计算内容指纹
   String _contentFingerprintFromMap(Map<String, dynamic> payload) {
-    final items = (payload['items'] as List).cast<Map<String, dynamic>>();
+    final items = (payload['items'] as List? ?? []).cast<Map<String, dynamic>>();
     final canon = items
         .map((it) {
           // 标签：排序后拼接，确保顺序一致
