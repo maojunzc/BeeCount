@@ -104,15 +104,9 @@ class PostProcessor {
     // BeeCount Cloud：始终自动双向同步
     if (sync is SyncEngine) {
       final refresh = ref.read(syncStatusRefreshProvider.notifier);
-      Future(() async {
-        try {
-          await sync.sync(ledgerId: ledgerId.toString());
-          refresh.state++;
-          logger.info('PostProcessor', 'BeeCount Cloud 自动同步完成', 'ledgerId=$ledgerId');
-        } catch (e) {
-          logger.error('PostProcessor', 'BeeCount Cloud 自动同步失败', e);
-        }
-      });
+      await sync.sync(ledgerId: ledgerId.toString());
+      refresh.state++;
+      logger.info('PostProcessor', 'BeeCount Cloud 自动同步完成', 'ledgerId=$ledgerId');
       return;
     }
 
@@ -120,15 +114,9 @@ class PostProcessor {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('auto_sync') ?? false) {
       final refresh = ref.read(syncStatusRefreshProvider.notifier);
-      Future(() async {
-        try {
-          await sync.uploadCurrentLedger(ledgerId: ledgerId);
-          refresh.state++;
-          logger.info('PostProcessor', '后台同步完成', 'ledgerId=$ledgerId');
-        } catch (e) {
-          logger.error('PostProcessor', '后台同步失败', e);
-        }
-      });
+      await sync.uploadCurrentLedger(ledgerId: ledgerId);
+      refresh.state++;
+      logger.info('PostProcessor', '后台同步完成', 'ledgerId=$ledgerId');
     }
   }
 
@@ -144,15 +132,9 @@ class PostProcessor {
     // BeeCount Cloud：始终自动双向同步
     if (sync is SyncEngine) {
       final refresh = c.read(syncStatusRefreshProvider.notifier);
-      Future(() async {
-        try {
-          await sync.sync(ledgerId: ledgerId.toString());
-          refresh.state++;
-          logger.info('PostProcessor', 'BeeCount Cloud 自动同步完成', 'ledgerId=$ledgerId');
-        } catch (e) {
-          logger.error('PostProcessor', 'BeeCount Cloud 自动同步失败', e);
-        }
-      });
+      await sync.sync(ledgerId: ledgerId.toString());
+      refresh.state++;
+      logger.info('PostProcessor', 'BeeCount Cloud 自动同步完成', 'ledgerId=$ledgerId');
       return;
     }
 
@@ -160,15 +142,9 @@ class PostProcessor {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('auto_sync') ?? false) {
       final refresh = c.read(syncStatusRefreshProvider.notifier);
-      Future(() async {
-        try {
-          await sync.uploadCurrentLedger(ledgerId: ledgerId);
-          refresh.state++;
-          logger.info('PostProcessor', '后台同步完成', 'ledgerId=$ledgerId');
-        } catch (e) {
-          logger.error('PostProcessor', '后台同步失败', e);
-        }
-      });
+      await sync.uploadCurrentLedger(ledgerId: ledgerId);
+      refresh.state++;
+      logger.info('PostProcessor', '后台同步完成', 'ledgerId=$ledgerId');
     }
   }
 
@@ -184,15 +160,9 @@ class PostProcessor {
     // BeeCount Cloud：始终自动双向同步
     if (sync is SyncEngine) {
       final refresh = ref.read(syncStatusRefreshProvider.notifier);
-      Future(() async {
-        try {
-          await sync.sync(ledgerId: ledgerId.toString());
-          refresh.state++;
-          logger.info('PostProcessor', 'BeeCount Cloud 自动同步完成', 'ledgerId=$ledgerId');
-        } catch (e) {
-          logger.error('PostProcessor', 'BeeCount Cloud 自动同步失败', e);
-        }
-      });
+      await sync.sync(ledgerId: ledgerId.toString());
+      refresh.state++;
+      logger.info('PostProcessor', 'BeeCount Cloud 自动同步完成', 'ledgerId=$ledgerId');
       return;
     }
 
@@ -200,15 +170,9 @@ class PostProcessor {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('auto_sync') ?? false) {
       final refresh = ref.read(syncStatusRefreshProvider.notifier);
-      Future(() async {
-        try {
-          await sync.uploadCurrentLedger(ledgerId: ledgerId);
-          refresh.state++;
-          logger.info('PostProcessor', '后台同步完成', 'ledgerId=$ledgerId');
-        } catch (e) {
-          logger.error('PostProcessor', '后台同步失败', e);
-        }
-      });
+      await sync.uploadCurrentLedger(ledgerId: ledgerId);
+      refresh.state++;
+      logger.info('PostProcessor', '后台同步完成', 'ledgerId=$ledgerId');
     }
   }
 }

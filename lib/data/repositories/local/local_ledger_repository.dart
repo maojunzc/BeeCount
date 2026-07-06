@@ -23,9 +23,8 @@ class LocalLedgerRepository implements LedgerRepository {
 
   @override
   Future<Ledger?> getLedgerById(int id) async {
-    final query = db.select(db.ledgers)..where((l) => l.id.equals(id));
-    final results = await query.get();
-    return results.isEmpty ? null : results.first;
+    return (db.select(db.ledgers)..where((l) => l.id.equals(id)))
+        .getSingleOrNull();
   }
 
   @override

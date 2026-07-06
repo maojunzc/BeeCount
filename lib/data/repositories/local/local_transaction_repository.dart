@@ -555,16 +555,18 @@ class LocalTransactionRepository implements TransactionRepository {
 
   @override
   Future<void> deleteTransaction(int id) async {
-    // 先删除关联的标签
-    await (db.delete(db.transactionTags)
-          ..where((tt) => tt.transactionId.equals(id)))
-        .go();
+    await db.transaction(() async {
+      // 先删除关联的标签
+      await (db.delete(db.transactionTags)
+            ..where((tt) => tt.transactionId.equals(id)))
+          .go();
 
-    // 再删除关联的附件
-    await _deleteAttachmentsForTransaction(id);
+      // 再删除关联的附件
+      await _deleteAttachmentsForTransaction(id);
 
-    // 最后删除交易记录
-    await (db.delete(db.transactions)..where((t) => t.id.equals(id))).go();
+      // 最后删除交易记录
+      await (db.delete(db.transactions)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   /// 删除交易关联的所有附件（包括文件和数据库记录）
@@ -943,14 +945,16 @@ class LocalTransactionRepository implements TransactionRepository {
 
     // 批量查询分类
     final categoriesMap = <int, Category>{};
-    for (final tx in transactions) {
-      if (tx.categoryId != null) {
-        final category = await (db.select(db.categories)
-              ..where((c) => c.id.equals(tx.categoryId!)))
-            .getSingleOrNull();
-        if (category != null) {
-          categoriesMap[tx.categoryId!] = category;
-        }
+    final categoryIds = transactions
+        .where((t) => t.categoryId != null)
+        .map((t) => t.categoryId!)
+        .toSet();
+    if (categoryIds.isNotEmpty) {
+      final categories = await (db.select(db.categories)
+            ..where((c) => c.id.isIn(categoryIds.toList())))
+          .get();
+      for (final category in categories) {
+        categoriesMap[category.id] = category;
       }
     }
 
@@ -1210,60 +1214,76 @@ class LocalTransactionRepository implements TransactionRepository {
           ]))
         .get();
 
-    // 批量获取所有相关的 category, tags, attachments, account
-    final result = <({
-      Transaction t,
-      Category? category,
-      List<Tag> tags,
-      List<TransactionAttachment> attachments,
-      Account? account,
-    })>[];
-
-    for (final transaction in transactions) {
-      // 获取分类
-      Category? category;
-      if (transaction.categoryId != null) {
-        category = await (db.select(db.categories)
-              ..where((c) => c.id.equals(transaction.categoryId!)))
-            .getSingleOrNull();
-      }
-
-      // 获取标签
-      final tagRelations = await (db.select(db.transactionTags)
-            ..where((tt) => tt.transactionId.equals(transaction.id)))
-          .get();
-
-      final tags = <Tag>[];
-      for (final rel in tagRelations) {
-        final tag = await (db.select(db.tags)
-              ..where((t) => t.id.equals(rel.tagId)))
-            .getSingleOrNull();
-        if (tag != null) tags.add(tag);
-      }
-
-      // 获取附件
-      final attachments = await (db.select(db.transactionAttachments)
-            ..where((a) => a.transactionId.equals(transaction.id)))
-          .get();
-
-      // 获取账户
-      Account? account;
-      if (transaction.accountId != null) {
-        account = await (db.select(db.accounts)
-              ..where((a) => a.id.equals(transaction.accountId!)))
-            .getSingleOrNull();
-      }
-
-      result.add((
-        t: transaction,
-        category: category,
-        tags: tags,
-        attachments: attachments,
-        account: account,
-      ));
+    if (transactions.isEmpty) {
+      return [];
     }
 
-    return _hydrateSharedOverridesFull(result);
+    final txIds = transactions.map((t) => t.id).toList();
+
+    // 批量查询分类
+    final categoriesMap = <int, Category>{};
+    final categoryIds = transactions
+        .where((t) => t.categoryId != null)
+        .map((t) => t.categoryId!)
+        .toSet();
+    if (categoryIds.isNotEmpty) {
+      final categories = await (db.select(db.categories)
+            ..where((c) => c.id.isIn(categoryIds.toList())))
+          .get();
+      for (final category in categories) {
+        categoriesMap[category.id] = category;
+      }
+    }
+
+    // 批量查询标签
+    final tagsMap = <int, List<Tag>>{};
+    final tagRelations = await (db.select(db.transactionTags)
+          ..where((tt) => tt.transactionId.isIn(txIds)))
+        .get();
+
+    final tagIds = tagRelations.map((r) => r.tagId).toSet();
+    if (tagIds.isNotEmpty) {
+      final tags = await (db.select(db.tags)
+            ..where((t) => t.id.isIn(tagIds.toList())))
+          .get();
+      final tagsById = {for (var tag in tags) tag.id: tag};
+
+      for (final rel in tagRelations) {
+        final tag = tagsById[rel.tagId];
+        if (tag != null) {
+          tagsMap.putIfAbsent(rel.transactionId, () => []).add(tag);
+        }
+      }
+    }
+
+    // 批量查询附件
+    final attachmentsMap = <int, List<TransactionAttachment>>{};
+    final attachments = await (db.select(db.transactionAttachments)
+          ..where((a) => a.transactionId.isIn(txIds)))
+        .get();
+    for (final attachment in attachments) {
+      attachmentsMap
+          .putIfAbsent(attachment.transactionId, () => [])
+          .add(attachment);
+    }
+
+    // 批量查询账户
+    final accountIds = transactions
+        .where((t) => t.accountId != null)
+        .map((t) => t.accountId!)
+        .toSet();
+    final accountsMap = <int, Account>{};
+    if (accountIds.isNotEmpty) {
+      final accounts = await (db.select(db.accounts)
+            ..where((a) => a.id.isIn(accountIds.toList())))
+          .get();
+      for (final account in accounts) {
+        accountsMap[account.id] = account;
+      }
+    }
+
+    // 组装结果
+    final result = transactions.map((tx) {
   }
 
   @override

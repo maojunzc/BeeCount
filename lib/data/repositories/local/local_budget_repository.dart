@@ -77,22 +77,24 @@ class LocalBudgetRepository implements BudgetRepository {
 
   @override
   Future<void> deleteBudget(int id) async {
-    // 先获取预算信息，判断是否为总预算
-    final budget = await (db.select(db.budgets)
-          ..where((b) => b.id.equals(id)))
-        .getSingleOrNull();
+    // 使用事务确保 read + delete 之间不会出现 TOCTOU 竞态
+    await db.transaction(() async {
+      final budget = await (db.select(db.budgets)
+            ..where((b) => b.id.equals(id)))
+          .getSingleOrNull();
 
-    if (budget == null) return;
+      if (budget == null) return;
 
-    if (budget.type == 'total') {
-      // 删除总预算时，同时删除该账本的所有分类预算
-      await (db.delete(db.budgets)
-            ..where((b) => b.ledgerId.equals(budget.ledgerId)))
-          .go();
-    } else {
-      // 删除单个分类预算
-      await (db.delete(db.budgets)..where((b) => b.id.equals(id))).go();
-    }
+      if (budget.type == 'total') {
+        // 删除总预算时，同时删除该账本的所有分类预算
+        await (db.delete(db.budgets)
+              ..where((b) => b.ledgerId.equals(budget.ledgerId)))
+            .go();
+      } else {
+        // 删除单个分类预算
+        await (db.delete(db.budgets)..where((b) => b.id.equals(id))).go();
+      }
+    });
   }
 
   @override

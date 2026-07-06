@@ -570,7 +570,7 @@ class BeeDatabase extends _$BeeDatabase {
 
             // 3. 删除旧表
             print('[DB Migration] 步骤3: 删除旧表');
-            await customStatement('DROP TABLE recurring_transactions;');
+            await customStatement('DROP TABLE IF EXISTS recurring_transactions;');
 
             // 4. 重命名新表
             print('[DB Migration] 步骤4: 重命名新表');
