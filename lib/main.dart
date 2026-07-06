@@ -146,11 +146,21 @@ Future<void> main() async {
   // 执行,失败不致命。
   unawaited(_runOrphanFileGcOnce(container));
 
-  runApp(ProviderScope(
-    parent: container,
-    observers: const [_WidgetUpdateObserver()],
-    child: const MainApp(),
-  ));
+  // 顶层异常隔离:捕获所有未处理的 Flutter 错误与 Dart 异步异常,
+  // 防止整页白屏或静默崩溃。
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    logger.error('FlutterError', details.exceptionAsString(), details.stack);
+  };
+  runZonedGuarded(() {
+    runApp(ProviderScope(
+      parent: container,
+      observers: const [_WidgetUpdateObserver()],
+      child: const MainApp(),
+    ));
+  }, (Object error, StackTrace stack) {
+    logger.error('ZoneError', error.toString(), error, stack);
+  });
 }
 
 /// Provider observer to update widget on app start

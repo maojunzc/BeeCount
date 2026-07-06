@@ -98,6 +98,18 @@ class TransactionListState extends ConsumerState<TransactionList> {
     return _preloadedIds ?? {};
   }
 
+  /// 预构建的交易详情 Map（key=transactionId），避免 O(N²) where 查找
+  Map<int, TransactionDisplayItem>? _preloadedItemsMap;
+  Map<int, TransactionDisplayItem> get _preloadedItems {
+    if (_preloadedItemsMap == null && widget.transactionsWithDetails != null) {
+      _preloadedItemsMap = {
+        for (final item in widget.transactionsWithDetails!)
+          item.t.id: item
+      };
+    }
+    return _preloadedItemsMap ?? const {};
+  }
+
   @override
   void initState() {
     super.initState();
@@ -114,6 +126,7 @@ class TransactionListState extends ConsumerState<TransactionList> {
     // 检测预加载数据是否变化（如账本切换），重置状态
     if (widget.transactionsWithDetails != oldWidget.transactionsWithDetails) {
       _preloadedIds = null; // 重置预加载 ID 缓存
+      _preloadedItemsMap = null; // 重置预加载 Map 缓存
       if (widget.transactionsWithDetails != null) {
         _usePreloadedData = true; // 重置为预加载模式
       }
@@ -182,12 +195,10 @@ class TransactionListState extends ConsumerState<TransactionList> {
     return _usePreloadedData && _preloadedIdSet.contains(transactionId);
   }
 
-  /// 获取预加载的交易详情
+  /// 获取预加载的交易详情（O(1) Map 查找，替代 O(N) where 搜索）
   TransactionDisplayItem? _getPreloadedItem(int transactionId) {
     if (!_hasPreloadedDetails(transactionId)) return null;
-    return widget.transactionsWithDetails!
-        .where((item) => item.t.id == transactionId)
-        .firstOrNull;
+    return _preloadedItems[transactionId];
   }
 
   /// 获取交易的标签列表（优先使用预加载数据）
@@ -286,9 +297,20 @@ class TransactionListState extends ConsumerState<TransactionList> {
     return false; // 没有找到目标月份
   }
 
-  /// 构建扁平化的项目列表
+  /// 上次构建的扁平化列表版本（用于判断是否需要重建）
+  List<({Transaction t, Category? category, Account? account, Account? toAccount})>? _lastTransactionsList;
+  String? _lastTransactionsHash;
+
+  /// 构建扁平化的项目列表（仅在 transactions 数据变化时重建，避免每次 build O(N) 分组排序）
   void _buildFlatItems() {
     final transactions = _transactionsList;
+
+    // 通过 transaction ID 列表的 hash 判断数据是否变化，跳过无变化的重复构建
+    final currentHash = transactions.fold<int>(0, (h, t) => h ^ t.t.id.hashCode);
+    if (_lastTransactionsHash != null && _lastTransactionsHash == currentHash.toString()) {
+      return; // 数据未变，复用上次构建结果
+    }
+    _lastTransactionsHash = currentHash.toString();
 
     // 按天分组
     final dateFmt = DateFormat('yyyy-MM-dd');

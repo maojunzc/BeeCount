@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.HandlerThread
 import android.provider.MediaStore
 import android.util.Log
 
@@ -49,6 +50,10 @@ class ScreenshotObserver(
     private var lastProcessTime = 0L
     private val minProcessInterval = 500L // 最小处理间隔500ms
 
+    // 后台 HandlerThread 用于执行 ContentResolver.query，避免主线程 ANR
+    private val backgroundHandlerThread = HandlerThread("ScreenshotObserverBg").apply { start() }
+    private val backgroundHandler = Handler(backgroundHandlerThread.looper)
+
     init {
         // 从SharedPreferences加载已处理的路径
         loadProcessedPaths()
@@ -72,17 +77,18 @@ class ScreenshotObserver(
             Log.d(TAG, "⏱️ [性能] onChange触发: uri=$uri, 时间=${startTime}")
             LoggerPlugin.info(TAG, "ContentObserver检测到媒体库变化: uri=$uri")
 
-            // 直接处理变化的URI，避免查询所有图片
-            if (uri != null) {
-                checkImageUri(uri)
-            } else {
-                // 兜底方案：如果没有URI，使用旧的查询方式
-                checkForNewScreenshot()
-            }
+            // 在后台线程执行 ContentResolver.query，避免主线程 ANR
+            backgroundHandler.post {
+                if (uri != null) {
+                    checkImageUri(uri)
+                } else {
+                    checkForNewScreenshot()
+                }
 
-            val elapsed = System.currentTimeMillis() - startTime
-            Log.d(TAG, "⏱️ [性能] onChange处理完成, 耗时=${elapsed}ms")
-            LoggerPlugin.debug(TAG, "ContentObserver处理完成, 耗时=${elapsed}ms")
+                val elapsed = System.currentTimeMillis() - startTime
+                Log.d(TAG, "⏱️ [性能] onChange处理完成, 耗时=${elapsed}ms")
+                LoggerPlugin.debug(TAG, "ContentObserver处理完成, 耗时=${elapsed}ms")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "处理媒体库变化失败", e)
             LoggerPlugin.error(TAG, "处理媒体库变化失败: ${e.message}")

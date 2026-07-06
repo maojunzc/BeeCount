@@ -977,8 +977,8 @@ class _BeeBottomBar extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: isActive ? Border.all(color: primaryColor, width: 1.5) : null,
-          image: DecorationImage(
-            image: FileImage(File(avatarPath!)),
+            image: DecorationImage(
+            image: FileImage(File(avatarPath!), scale: 1.0),
             fit: BoxFit.cover,
           ),
         ),

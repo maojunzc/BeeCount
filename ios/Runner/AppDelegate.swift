@@ -74,4 +74,16 @@ import UserNotifications
   ) {
     completionHandler()
   }
+  
+  // 处理 beecount:// 自定义 URL Scheme（Widget 点击入口）
+  override func application(
+    _ app: UIApplication,
+    open url: URL,
+    options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+  ) -> Bool {
+    if url.scheme == "beecount" {
+      return super.application(app, open: url, options: options)
+    }
+    return false
+  }
 }

@@ -71,10 +71,8 @@ class MainActivity: FlutterFragmentActivity() {
                         android.util.Log.d("MainActivity", "图片已保存到: $imagePath")
                         LoggerPlugin.info("MainActivity", "分享图片已保存: $imagePath")
 
-                        // 通知Flutter端（延迟一下确保Flutter已初始化）
-                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                            notifyFlutterSharedImage(imagePath)
-                        }, 500)
+                        // 通知Flutter端 — 改用 isFlutterEngineReady 判断而非硬延迟
+                        notifyFlutterSharedImage(imagePath)
                     }
                 } catch (e: Exception) {
                     android.util.Log.e("MainActivity", "处理分享图片失败: $e")
