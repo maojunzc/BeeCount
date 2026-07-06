@@ -170,8 +170,14 @@ class IOSNotificationUtil implements util.NotificationUtil {
 
     if (iosPlugin == null) return false;
 
-    // iOS 需要实际请求一次才能知道状态
-    // 或者可以检查之前是否授权过
-    return true; // iOS 没有直接检查的 API，需要通过实际调用判断
+    // 通过 iOS 原生 API 检查通知授权状态
+    try {
+      final settings = await iosPlugin.getNotificationSettings();
+      return settings?.authorizationStatus == AuthorizationStatus.authorized
+          || settings?.authorizationStatus == AuthorizationStatus.provisional;
+    } catch (e) {
+      debugPrint('iOS checkPermissionStatus 失败: $e');
+      return false;
+    }
   }
 }

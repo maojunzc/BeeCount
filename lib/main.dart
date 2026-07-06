@@ -76,8 +76,8 @@ Future<void> main() async {
     print('⚠️  通知服务初始化失败（可能在不支持的平台上运行）: $e');
   }
 
-  // 恢复用户的记账提醒设置（关键修复：应用重启后自动恢复提醒）
-  await _restoreUserReminder();
+  // 恢复用户的记账提醒设置 — splash 阶段异步执行，不阻塞主入口白屏
+  unawaited(_restoreUserReminder());
 
   // 启动提醒监控服务（监听应用生命周期，自动恢复丢失的提醒）
   try {
